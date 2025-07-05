@@ -15,6 +15,7 @@ h1 {
 .display {
     background-color: white;
     border:20px solid gray;
+    height: 80px;
 }
 
 .buttons {
