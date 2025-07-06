@@ -13,7 +13,7 @@ button.style.border = "8px solid gray";
 const buttonCopies = [];
 for (let i = 0; i < 16; i++) {
     let copy = button.cloneNode(true);
-    copy.className = i;
+    copy.className = "btn-" + i;
     buttonCopies.push(copy);
     buttonsSection.appendChild(copy);
 }
@@ -21,7 +21,7 @@ for (let i = 0; i < 16; i++) {
 buttonCopies[0].textContent = "7";
 buttonCopies[1].textContent = "8";
 buttonCopies[2].textContent = "9";
-buttonCopies[3].textContent = "X";
+buttonCopies[3].textContent = "x";
 buttonCopies[4].textContent = "4";
 buttonCopies[5].textContent = "5";
 buttonCopies[6].textContent = "6";
@@ -32,7 +32,7 @@ buttonCopies[10].textContent = "3";
 buttonCopies[11].textContent = "+";
 buttonCopies[12].textContent = "0";
 buttonCopies[13].textContent = ".";
-buttonCopies[14].textContent = "+/-";
+buttonCopies[14].textContent = "/";
 buttonCopies[15].textContent = "=";
 
 buttonCopies[0].addEventListener('click', () => {
@@ -55,38 +55,62 @@ function multiply(a, b) {
 function divide(a, b) {
     return a / b;
 }
+// declare equal button
 
 clearButton.addEventListener('click', () => {
     display.textContent = ' ';
+    clickCount = 0;
 });
 
-// Operator Calc Function
-let clickCount = 0;
-function operate(a, operator, b) {
+let equalButton = document.querySelector(".btn-15");
+let a;
+let operator;
+let b;
+let answer;
+
+// Run Calc Function
+function operate() {
     for (let i = 0; i < buttonCopies.length; i++) {
         buttonCopies[i].addEventListener('click', () => {
-            clickCount++;
-            if (clickCount == 1) {
-                a = buttonCopies[i].textContent;
+            a = buttonCopies[i].textContent;
+            if (!['+', '-', '/', 'x'].includes(operator)) {
+                a += buttonCopies[i].textContent;
+                display.textContent = a;
                 console.log("a: " + a);
-                
             }
 
-            if (clickCount == 2) {
-                operator = buttonCopies[i].textContent;
-                if (!['+', '-', '/', '*'].includes(operator)) {
-                        display.textContent = "INVALID OPERATOR";
-                        clickCount--;
-                        return;
-                    }
-                console.log("operator: " + operator);
+            operator = buttonCopies[i].textContent;
+            if (['+', '-', '/', 'x'].includes(operator)) {
+                    display.textContent = "INVALID OPERATOR";
+                    return;
             }
+
+            console.log("operator: " + operator);
 
             if (clickCount == 3) {
                 b = buttonCopies[i].textContent;
+                display.textContent = b;
                 console.log("b: " + b);
             }
         });
     }
+
+    // when Equals is clicked, run corresponding function
+    equalButton.addEventListener('click', () => {
+        if (operator == "+") {
+            answer = add(a, b);
+        }
+        if (operator == "-") {
+            answer = subtract(a, b);
+        }
+        if (operator == "/") {
+            answer = divide(a, b);
+        }
+        if (operator == "x") {
+            answer = multiply(a, b);
+        }
+        console.log("answer: " + answer);
+        display.textContent = answer;
+})
 }
 operate();
