@@ -55,62 +55,82 @@ function multiply(a, b) {
 function divide(a, b) {
     return a / b;
 }
-// declare equal button
 
+// CLEAR BUTTON
 clearButton.addEventListener('click', () => {
     display.textContent = ' ';
-    clickCount = 0;
+    a = []
+    b = []
+    operator = undefined;
+    firstTime = true;
 });
 
 let equalButton = document.querySelector(".btn-15");
-let a;
+let a = [] ;
 let operator;
-let b;
+let b = [];
 let answer;
 
+let num1;
+let num2;
+
+let firstTime = true;
 // Run Calc Function
 function operate() {
     for (let i = 0; i < buttonCopies.length; i++) {
         buttonCopies[i].addEventListener('click', () => {
-            a = buttonCopies[i].textContent;
-            if (!['+', '-', '/', 'x'].includes(operator)) {
-                a += buttonCopies[i].textContent;
-                display.textContent = a;
+            if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
+                 && typeof operator == "undefined" && firstTime) {
+                a.push(buttonCopies[i].textContent);
+                num1 = a.join("");
+                display.textContent = num1;
                 console.log("a: " + a);
+            } else if (!firstTime) {
+                a = answer;
+                num1 = answer;
             }
 
-            operator = buttonCopies[i].textContent;
-            if (['+', '-', '/', 'x'].includes(operator)) {
-                    display.textContent = "INVALID OPERATOR";
-                    return;
+            if (['+', '-', '/', 'x'].includes(buttonCopies[i].textContent)) {
+                operator = buttonCopies[i].textContent;
+                console.log("operator: " + operator);
+               
             }
-
-            console.log("operator: " + operator);
-
-            if (clickCount == 3) {
-                b = buttonCopies[i].textContent;
-                display.textContent = b;
+            
+            if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
+                 && operator) {
+                b.push(buttonCopies[i].textContent);
+                num2 = b.join("");
+                display.textContent = num2;
                 console.log("b: " + b);
             }
+
+            
+
+            
         });
     }
 
     // when Equals is clicked, run corresponding function
     equalButton.addEventListener('click', () => {
         if (operator == "+") {
-            answer = add(a, b);
+            answer = add(parseInt(num1), parseInt(num2));
         }
         if (operator == "-") {
-            answer = subtract(a, b);
-        }
+            console.log(parseInt(num1));
+            console.log(parseInt(num2));
+            answer = subtract(parseInt(num1), parseInt(num2));
+        }   
         if (operator == "/") {
-            answer = divide(a, b);
+            answer = divide(num1, num2);
         }
         if (operator == "x") {
-            answer = multiply(a, b);
+            answer = multiply(num1, num2);
         }
         console.log("answer: " + answer);
         display.textContent = answer;
+        
+        // Bool variable to make sure num 1 becomes answer
+        firstTime = false;
 })
 }
 operate();
