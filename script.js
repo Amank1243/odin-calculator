@@ -95,6 +95,16 @@ function operate() {
                 console.log("operator: " + operator);
                
             }
+
+            if (!firstTime) {
+                b = [];
+                // The code is very buggy, but may need more exploring
+
+                // b.push(buttonCopies[i].textContent);
+                // num2 = b.join("");
+                // display.textContent = num2;
+                // console.log("b: " + b);
+            }
             
             if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
                  && operator) {
