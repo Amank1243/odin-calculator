@@ -35,10 +35,6 @@ buttonCopies[13].textContent = ".";
 buttonCopies[14].textContent = "/";
 buttonCopies[15].textContent = "=";
 
-buttonCopies[0].addEventListener('click', () => {
-
-})
-
 // MATH FUNCTIONS
 function add(a, b) {
     return a + b;
@@ -74,6 +70,7 @@ let answer;
 let num1;
 let num2;
 
+// flag variables
 let firstTime = true;
 // Run Calc Function
 function operate() {
@@ -93,32 +90,31 @@ function operate() {
             if (['+', '-', '/', 'x'].includes(buttonCopies[i].textContent)) {
                 operator = buttonCopies[i].textContent;
                 console.log("operator: " + operator);
-               
             }
 
-            if (!firstTime) {
+            // Prevents numbers from acting weird after 1st time through
+            if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
+                 && !firstTime) {
                 b = [];
-                // The code is very buggy, but may need more exploring
-
-                // b.push(buttonCopies[i].textContent);
-                // num2 = b.join("");
-                // display.textContent = num2;
-                // console.log("b: " + b);
+                firstTime = true;
             }
             
             if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
-                 && operator) {
+                 && operator && firstTime) {
                 b.push(buttonCopies[i].textContent);
                 num2 = b.join("");
                 display.textContent = num2;
                 console.log("b: " + b);
             }
-
             
 
             
         });
     }
+
+    // add back to back operator uses
+
+    
 
     // when Equals is clicked, run corresponding function
     equalButton.addEventListener('click', () => {
@@ -131,7 +127,11 @@ function operate() {
             answer = subtract(parseInt(num1), parseInt(num2));
         }   
         if (operator == "/") {
-            answer = divide(num1, num2);
+            if (num2 == 0) {
+                answer = "Cannot divide by 0 >;{\n Press clear to continue";
+            } else {
+                answer = divide(num1, num2);
+            }
         }
         if (operator == "x") {
             answer = multiply(num1, num2);
