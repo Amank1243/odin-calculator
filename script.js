@@ -1,15 +1,17 @@
-// Create buttons
+// create buttons
 let buttonsSection = document.querySelector(".buttons");
 let button = document.createElement("button");
 let display = document.querySelector(".display");
 let clearButton = document.querySelector(".clear");
 
+// button style
 button.className = "button";
 button.style.borderRadius = "2px";
 button.style.width = "80px";
 button.style.height = "60px";
 button.style.border = "8px solid gray";
 
+// accessor for buttons
 const buttonCopies = [];
 for (let i = 0; i < 16; i++) {
     let copy = button.cloneNode(true);
@@ -18,6 +20,10 @@ for (let i = 0; i < 16; i++) {
     buttonsSection.appendChild(copy);
 }
 
+// create equal button after it is added to the dom, hence why it is apart from the others
+let equalButton = document.querySelector(".btn-15");
+
+// set button's display
 buttonCopies[0].textContent = "7";
 buttonCopies[1].textContent = "8";
 buttonCopies[2].textContent = "9";
@@ -55,34 +61,30 @@ function divide(a, b) {
 // CLEAR BUTTON
 clearButton.addEventListener('click', () => {
     display.textContent = ' ';
-    a = []
-    b = []
+    a = [];
+    b = [];
     operator = undefined;
-    firstTime = true;
+    waitingForSecondOperand = true;
 });
 
-let equalButton = document.querySelector(".btn-15");
-let a = [] ;
+// global variables
+let a = [];
 let operator;
 let b = [];
 let answer;
-
 let num1;
 let num2;
+let waitingForSecondOperand = true;
 
-// flag variables
-let firstTime = true;
-// Run Calc Function
-function operate() {
     for (let i = 0; i < buttonCopies.length; i++) {
         buttonCopies[i].addEventListener('click', () => {
             if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
-                 && typeof operator == "undefined" && firstTime) {
+                 && typeof operator == "undefined" && waitingForSecondOperand) {
                 a.push(buttonCopies[i].textContent);
                 num1 = a.join("");
                 display.textContent = num1;
                 console.log("a: " + a);
-            } else if (!firstTime) {
+            } else if (!waitingForSecondOperand) {
                 a = answer;
                 num1 = answer;
             }
@@ -94,13 +96,13 @@ function operate() {
 
             // Prevents numbers from acting weird after 1st time through
             if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
-                 && !firstTime) {
+                 && !waitingForSecondOperand) {
                 b = [];
-                firstTime = true;
+                waitingForSecondOperand = true;
             }
             
             if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
-                 && operator && firstTime) {
+                 && operator && waitingForSecondOperand) {
                 b.push(buttonCopies[i].textContent);
                 num2 = b.join("");
                 display.textContent = num2;
@@ -122,8 +124,6 @@ function operate() {
             answer = add(parseInt(num1), parseInt(num2));
         }
         if (operator == "-") {
-            console.log(parseInt(num1));
-            console.log(parseInt(num2));
             answer = subtract(parseInt(num1), parseInt(num2));
         }   
         if (operator == "/") {
@@ -140,7 +140,5 @@ function operate() {
         display.textContent = answer;
         
         // Bool variable to make sure num 1 becomes answer
-        firstTime = false;
-})
-}
-operate();
+        waitingForSecondOperand = false;
+});
