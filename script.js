@@ -13,7 +13,7 @@ button.style.border = "8px solid gray";
 
 // accessor for buttons
 const buttonCopies = [];
-for (let i = 0; i < 16; i++) {
+for (let i = 0; i < 15; i++) {
     let copy = button.cloneNode(true);
     copy.className = "btn-" + i;
     buttonCopies.push(copy);
@@ -21,7 +21,7 @@ for (let i = 0; i < 16; i++) {
 }
 
 // create equal button after it is added to the dom, hence why it is apart from the others
-let equalButton = document.querySelector(".btn-15");
+let equalButton = document.querySelector(".btn-14");
 
 // set button's display
 buttonCopies[0].textContent = "7";
@@ -37,9 +37,8 @@ buttonCopies[9].textContent = "2";
 buttonCopies[10].textContent = "3";
 buttonCopies[11].textContent = "+";
 buttonCopies[12].textContent = "0";
-buttonCopies[13].textContent = ".";
-buttonCopies[14].textContent = "/";
-buttonCopies[15].textContent = "=";
+buttonCopies[13].textContent = "/";
+buttonCopies[14].textContent = "=";
 
 // MATH FUNCTIONS
 function add(a, b) {
