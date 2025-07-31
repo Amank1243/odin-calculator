@@ -58,55 +58,75 @@ function divide(a, b) {
     return a / b;
 }
 
+// Display text function
+function changeDisplayText(setText) {
+    return display.textContent = setText;
+}
+
 // CLEAR BUTTON
 clearButton.addEventListener('click', () => {
-    display.textContent = ' ';
-    a = [];
-    b = [];
-    operator = undefined;
-    waitingForSecondOperand = true;
+    changeDisplayText(' ');
+    calculatorState.stringNum1 = [];
+    calculatorState.stringNum2 = [];
+    calculatorState.operator = undefined;
+    calculatorState.waitingForSecondOperand = true;
 });
 
-// global variables
-let a = [];
-let operator;
-let b = [];
-let answer;
-let num1;
-let num2;
-let waitingForSecondOperand = true;
+let calculatorState = {
+    stringNum1: [],
+    operator: undefined,
+    stringNum2: [],
+    num1: '',
+    num2: '',
+    answer: '',
+    waitingForSecondOperand: true
+}
+
+const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const operators = ['+', '-', '/', 'x'];
 
     for (let i = 0; i < buttonCopies.length; i++) {
         buttonCopies[i].addEventListener('click', () => {
-            if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
-                 && typeof operator == "undefined" && waitingForSecondOperand) {
-                a.push(buttonCopies[i].textContent);
-                num1 = a.join("");
-                display.textContent = num1;
-                console.log("a: " + a);
-            } else if (!waitingForSecondOperand) {
-                a = answer;
-                num1 = answer;
+            if (numbers.includes(buttonCopies[i].textContent)
+                && typeof calculatorState.operator == "undefined" && calculatorState.waitingForSecondOperand) {
+                calculatorState.stringNum1.push(buttonCopies[i].textContent);
+                calculatorState.num1 = calculatorState.stringNum1.join("");
+                display.textContent = calculatorState.num1;
+                console.log("a: " + calculatorState.stringNum1);
+                // implement logic for chaining operators
+            } else if (!calculatorState.waitingForSecondOperand) {
+                        calculatorState.stringNum1 = calculatorState.answer.toString().split('');
+                        calculatorState.num1 = calculatorState.answer.toString();
+                        calculatorState.stringNum2 = [];
+                        calculatorState.num2 = '';
+                        calculatorState.waitingForSecondOperand = true;
             }
 
-            if (['+', '-', '/', 'x'].includes(buttonCopies[i].textContent)) {
-                operator = buttonCopies[i].textContent;
-                console.log("operator: " + operator);
+            if (operators.includes(buttonCopies[i].textContent)) {
+                if (calculatorState.num1 && calculatorState.operator && calculatorState.num2) {
+                    calculateAnswer();
+                    calculatorState.stringNum1 = calculatorState.answer.toString().split('');
+                    calculatorState.num1 = calculatorState.answer.toString();
+                    calculatorState.stringNum2 = [];
+                    calculatorState.num2 = '';
+                }
+                calculatorState.operator = buttonCopies[i].textContent;
+                console.log("operator: " + calculatorState.operator);
             }
 
             // Prevents numbers from acting weird after 1st time through
-            if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
-                 && !waitingForSecondOperand) {
-                b = [];
-                waitingForSecondOperand = true;
+            if (numbers.includes(buttonCopies[i].textContent)
+                 && !calculatorState.waitingForSecondOperand) {
+                calculatorState.stringNum2 = [];
+                calculatorState.waitingForSecondOperand = true;
             }
             
-            if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(buttonCopies[i].textContent)
-                 && operator && waitingForSecondOperand) {
-                b.push(buttonCopies[i].textContent);
-                num2 = b.join("");
-                display.textContent = num2;
-                console.log("b: " + b);
+            if (numbers.includes(buttonCopies[i].textContent)
+                 && calculatorState.operator && calculatorState.waitingForSecondOperand) {
+                calculatorState.stringNum2.push(buttonCopies[i].textContent);
+                calculatorState.num2 = calculatorState.stringNum2.join("");
+                display.textContent = calculatorState.num2;
+                console.log("b: " + calculatorState.stringNum2);
             }
             
 
@@ -116,29 +136,34 @@ let waitingForSecondOperand = true;
 
     // add back to back operator uses
 
-    
+    function calculateAnswer() {
+        if (!calculatorState.num1 && !calculatorState.num2 && !calculatorState.answer) {return;}
+
+        if (calculatorState.operator == "+") {
+            calculatorState.answer = add(parseInt(calculatorState.num1), parseInt(calculatorState.num2));
+        }
+        if (calculatorState.operator == "-") {
+            calculatorState.answer = subtract(parseInt(calculatorState.num1), parseInt(calculatorState.num2));
+        }   
+        if (calculatorState.operator == "/") {
+            if (calculatorState.num2 == 0) {
+                calculatorState.answer = "Cannot divide by 0 >;{\n Press clear to continue";
+            } else {
+                calculatorState.answer = divide(calculatorState.num1, calculatorState.num2);
+            }
+        }
+        if (calculatorState.operator == "x") {
+            calculatorState.answer = multiply(calculatorState.num1, calculatorState.num2);
+        }
+        console.log("answer: " + calculatorState.answer);
+        changeDisplayText(calculatorState.answer);
+        calculatorState.operator = undefined;
+        // Bool variable to make sure num 1 becomes answer
+        calculatorState.waitingForSecondOperand = false;
+        return calculatorState.answer;
+    }
 
     // when Equals is clicked, run corresponding function
     equalButton.addEventListener('click', () => {
-        if (operator == "+") {
-            answer = add(parseInt(num1), parseInt(num2));
-        }
-        if (operator == "-") {
-            answer = subtract(parseInt(num1), parseInt(num2));
-        }   
-        if (operator == "/") {
-            if (num2 == 0) {
-                answer = "Cannot divide by 0 >;{\n Press clear to continue";
-            } else {
-                answer = divide(num1, num2);
-            }
-        }
-        if (operator == "x") {
-            answer = multiply(num1, num2);
-        }
-        console.log("answer: " + answer);
-        display.textContent = answer;
-        
-        // Bool variable to make sure num 1 becomes answer
-        waitingForSecondOperand = false;
+        calculateAnswer();
 });
